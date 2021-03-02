@@ -1,126 +1,132 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title> Registration page</title>
+    <title>Registration page</title>
 </head>
+
 <body>
-<h1>Registration Page</h1>
 
-<form>
-<table>
-<?php
-$validateName = "";
-$validateEmail = "";
-$validateUsername = "";
-$validatePassword = "";
-$validateConfirmpassword = "";
-$validateBirthdate = "";
-$validateCheckbox = "";
+    <?php
+    $validateName = "";
+    $validateEmail = "";
+    $validateUsername = "";
+    $validatePassword = "";
+    $validateConfirmpassword = "";
+    $validateBirthdate = "";
+    $validateGender = "";
 
-$v1=$v2=$v3="";
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $name = $_REQUEST["fname"];
+        $email = $_REQUEST["email"];
+        $username = $_REQUEST["username"];
+        $password = $_REQUEST["password"];
+        $confirmpassword = $_REQUEST["confirmpassword"];
+        $gender = $_REQUEST["gender"];
+        $birthday = $_REQUEST["birthday"];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (empty($name)) {
+            $validateName = "you must enter your name";
+        } else if (strlen($name) < 5) {
+            $validateName = "you must enter minimum 5 letter of your name";
+        } else if (!preg_match("/^[0-9a-zA-Z_']@ # & */", $name)) {
+            $validateName = "you can only use only ^[a-zA-Z-']@ # & * those characters";
+        } else {
+            $validateName = "your name is " . $name;
+        }
 
-    $name = $_REQUEST["fname"];
-    $email = $_REQUEST["email"];
-    $username = $_REQUEST["username"];
-    $password = $_REQUEST["password"];
-    $confirmpassword = $_REQUEST["confirmpassword"];
-    $gender = $_REQUEST["gender"];
-    $birthday = $_REQUEST["birthday"];
+        if (empty($email)) {
+            $validateEmail = "you must enter your email";
+        } else if (!preg_match("/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/", $email)) {
+            $validateEmail = "invalid email";
+        } else {
+            $validateEmail = "your email is " . $email;
+        }
 
-    if (empty($name) ) 
-    {
-        $validateName = "you must enter your name";
-    }
-    else if(strlen($name)<5)
-    {
-        $validateName = "you must enter minimum 5 letter of your name";
-    } 
-    else {
-        $validateName = "your name is " . $name;
-    }
+        if (empty($username)) {
+            $validateUsername = "you must enter your user name";
+        } else if (strlen($username) < 5) {
+            $validateUsername  = "you must enter more than 5 characters of your user name";
+        } else {
+            $validateUsername = "your user name is " . $username;
+        }
 
-    if (empty($email)) 
-    {
-        $validateEmail = "you must enter your email";
-    } 
-    else {
-        $validateEmail = "your email is " . $email;
-    }
+        if (empty($password)) {
+            $validatePassword = "you must enter your password";
+        } elseif (strlen($password) < 8) {
+            $validatePassword = "password must contain at least 8 characters";
+        } elseif (!preg_match("/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/", $password)) {
+            $validatePassword = "condition  not match";
+        } else {
+            $validatePassword = "your user password is " . $password;
+        }
 
-    if (empty($username)) {
-        $validateUsername = "you must enter your user name";
-    } 
-    else 
-    {
-        $validateUsername = "your user name is " . $username;
+        if (empty($confirmpassword)) {
+            $validateConfirmpassword = "you must enter your confirm password";
+        } else if ($confirmpassword === $password) {
+            $validateConfirmpassword = "you must match with password";
+        } else {
+            $validateConfirmpassword = "your user password is matched";
+        }
+
+        if (!isset($_REQUEST["gender"])) {
+            $validateGender = "select your gender";
+        } else {
+            $validateGender = "your gender is " . $gender;
+        }
+
+        if (empty($birthday)) {
+            $validateBirthdate = "Birthdate is required";
+        } else {
+            $validateBirthdate = "select date is " . $birthday;
+        }
     }
-    if (empty($password)) {
-        $validatePassword = "you must enter your password";
-    } 
-    else if(preg_match("@#$%",$password))
-    {
-        $validatePassword = "you password must contain special characters(@,#,$,%) ";
-    }
-    else {
-        $validatePassword = "your user password is " . $password;
-    }
-    if (empty($confirmpassword)) {
-        $validateConfirmpassword = "you must enter your confirm password";
-    } 
-    else if($confirmpassword===$password)
-    {
-        $validateConfirmpassword = "you must match with password";
-    }
-    else {
-        $validateConfirmpassword = "your user password is " . $confirmpassword;
-    }
-    
-}
-?>
-    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
-        enter yout name : <input type="text" name="fname"> <?php echo $validateName; ?>
-        <br>
-        <br>
-        enter your email : <input type="text" name="email"><?php echo $validateEmail; ?>
-        <br>
-        <?php
-        
-        ?>
-        <br>
-        <br>
-        Your gender: 
-        <br>
-        <input type="radio" id = "male" name="gender" value="male">
+    ?>
+
+    <h1>my registration page</h1>
+    <form form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
+        <table>
+            <tr>
+                <td>Your Name :</td>
+                <td><input type="text" name="fname" /><?php echo $validateName; ?></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>Your Email :</td>
+                <td><input type="text" name="email" /><?php echo $validateEmail; ?></td>
+            </tr>
+            <tr>
+                <td>Your User Name :</td>
+                <td><input type="text" name="username" /><?php echo $validateUsername; ?></td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td><input type="password" name="password" /></td>
+            </tr>
+            <tr>
+                <td>Confirm Password:</td>
+                <td><input type="password" name="confirmpassword" /><?php echo $validatePassword; ?></td>
+            </tr>
+        </table>
+        Your gender:
+        <br><br>
+        <input type="radio" id="male" name="gender" value="male">
         <label for="male"> Male </label><br>
-        <input type="radio" id = "female" name="gender" value="female">
+        <input type="radio" id="female" name="gender" value="female">
         <label for="female"> Female </label><br>
-        <input type="radio" id = "others" name="gender" value="others">
+        <input type="radio" id="others" name="gender" value="others">
         <label for="others"> Others </label><br>
+        <?php echo  $validateGender; ?>
         <br>
-        <button type="submit" value="submit">submit</button>
+        Date of birth:
+        <br>
+        <input type="date" id="birthday" name="birthday"><?php echo $validateBirthdate; ?>
+        <br><br>
+        <br>
+        <input type="submit" value="submit">
+        <input type="reset" value="reset">
     </form>
-
-<tr><td>User Name</td>
-<td><input type="text" name="username"></td></tr>
-
-<tr><td>Password</td>
-<td><input type="password" name="password"></td></tr>
-
-<tr><td>Confirm Password</td>
-<td><input type="password" name="confirmpassword"></td></tr>
-
-<tr><td>Date of birth:</td>
-<td><input type="date" id="birthday" name="birthday"></td>
-<td><br><br></td>
-<td><input type="submit" value="submit"></td>
-<td><input type="reset" value="reset"></td>
-</table>
-</form>
-
-
 </body>
 
 </html>
-
